@@ -17,7 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "generate:api-docs": "npx redoc-cli bundle ./configs/swagger-output.json -o ./public/api-docs.html",
+    "generate-postman": "npx openapi2postmanv2 -s ./configs/swagger-output.json -o ./configs/collection.json -p  -c ./configs/cli-postman-options.json"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^4.3.0",
