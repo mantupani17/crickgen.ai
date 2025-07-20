@@ -1,0 +1,121 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/rag": {
+      "post": {
+        "operationId": "AppController_rag",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/api/v1/analyze": {
+      "get": {
+        "operationId": "AppController_analyze",
+        "parameters": [
+          {
+            "name": "url",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/api/v1/ingest": {
+      "post": {
+        "operationId": "AppController_ingest",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/api/v1/openai/ask": {
+      "post": {
+        "operationId": "OpenaiController_ask",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Openai"
+        ]
+      }
+    },
+    "/api/v1/openai/scrap-web": {
+      "post": {
+        "operationId": "OpenaiController_scrapWebPage",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Openai"
+        ]
+      }
+    },
+    "/api/v1/openai/scrap-api": {
+      "post": {
+        "operationId": "OpenaiController_scrapApi",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Openai"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Crickgen.ai",
+    "description": "Cricket gen AI API Details",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:5002/api/v1",
+      "description": "Server Endpoint"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {}
+  }
+}
