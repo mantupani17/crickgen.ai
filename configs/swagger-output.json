@@ -66,6 +66,20 @@
         ]
       }
     },
+    "/api/v1/openai/ask-runnable": {
+      "post": {
+        "operationId": "OpenaiController_askWithRunnable",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Openai"
+        ]
+      }
+    },
     "/api/v1/openai/scrap-web": {
       "post": {
         "operationId": "OpenaiController_scrapWebPage",
@@ -91,6 +105,34 @@
         },
         "tags": [
           "Openai"
+        ]
+      }
+    },
+    "/api/v1/pdf-ingestion": {
+      "post": {
+        "operationId": "PdfIngestionController_handlePdfUpload",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "PdfIngestion"
+        ]
+      }
+    },
+    "/api/v1/pdf-ingestion/ask": {
+      "post": {
+        "operationId": "PdfIngestionController_askWithPdfData",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "PdfIngestion"
         ]
       }
     }

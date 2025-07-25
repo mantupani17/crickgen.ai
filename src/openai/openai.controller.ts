@@ -10,6 +10,11 @@ export class OpenaiController {
         return this.openaiService.ask(question)
     }
 
+    @Post("ask-runnable")
+    askWithRunnable(@Body("question") question:string) {
+        return this.openaiService.askWithRunnable(question)
+    }
+
     @Post("scrap-web")
     scrapWebPage(@Body("url") url:string) {
         return this.openaiService.scrapWebPages(url)

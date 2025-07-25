@@ -3,7 +3,7 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { CheerioWebBaseLoader } from '@langchain/community/document_loaders/web/cheerio';
 import { DummyEmbeddings } from './dummy-embeddings';
 import { GeminiService } from '../gemini-service/gemini-service.service';
-import { MongoVectorStoreService } from './mongo-vector-store.service'; // 👈
+import { MongoVectorStoreService } from '../common/mongo-vector-store.service'; // 👈
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -14,9 +14,7 @@ export class RagService {
   constructor(
     private readonly geminiService: GeminiService,
     private readonly configService: ConfigService
-  ) {
-
-  }
+  ) {}
 
   async askFromWeb(question: string): Promise<string> {
     const embeddings = new DummyEmbeddings(); // Or real one

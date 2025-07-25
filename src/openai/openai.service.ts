@@ -3,7 +3,9 @@ import { CheerioWebBaseLoader } from '@langchain/community/document_loaders/web/
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
 import { ConfigService } from '@nestjs/config';
-import { MongoVectorStoreService } from '../rag/mongo-vector-store.service';
+import { MongoVectorStoreService } from '../common/mongo-vector-store.service';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { LangChainTracer } from '@langchain/core/dist/tracers/tracer_langchain';
 
 
 @Injectable()
@@ -20,6 +22,7 @@ export class OpenaiService {
     private llm = new ChatOpenAI({
         openAIApiKey: this.openAiKey,
         modelName: 'gpt-3.5-turbo',
+        temperature: 0.7
     });
 
     constructor(private readonly configService: ConfigService){
@@ -65,6 +68,48 @@ export class OpenaiService {
                 Question: ${question}`;
             const response = await this.llm.invoke([{ role: 'user', content: prompt }]);
             return response.content;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async askWithRunnable(question: string) {
+        try {
+            await this.mongoClient.connect();
+            const vectorStore = await this.mongoClient.getStore(this.embeddings); // insert & index
+            const retriever = vectorStore.asRetriever({k: 5});
+            const chain = RunnableSequence.from([
+                async (input: string) => {
+                    const docs = await retriever.getRelevantDocuments(input);
+                    const context = docs.map((d) => d.pageContent).join('\n\n');
+                    return {
+                        context,
+                        question: input,
+                    };
+                },
+                 async ({ context, question }) => {
+                    const messages = [
+                    {
+                        role: 'system',
+                        content: 'Use the context to answer the question as truthfully as possible.',
+                    },
+                    {
+                        role: 'user',
+                        content: `Context:\n${context}\n\nQuestion:\n${question}`,
+                    },
+                    ];
+
+                    // Now call the model using `invoke`
+                    return await this.llm.invoke(messages);
+                },
+            ]);
+            const response = await chain.invoke(question, {
+                metadata:{
+                     run_name: 'askWithRunnable' 
+                }
+            });
+            await this.mongoClient.close();
+            return response.content
         } catch (error) {
             console.log(error)
         }

@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { appConfig, GenerateSwagger, LoggingInterceptor, setupOpenTelemetry } from 'common-core-pkg';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
+import * as express from 'express'
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   
@@ -19,9 +21,9 @@ async function bootstrap() {
   const port = cfgService.get('PORT')
   app.setGlobalPrefix('api/v1')
   app.enableCors()
-  // app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new LoggingInterceptor());
-  // app.useStaticAssets(path.join(__dirname, '..', 'public'));
+  app.use('/uploads', express.static('uploads')); 
 
   GenerateSwagger.generate(app as any, {
     description: 'Cricket gen AI API Details',
@@ -29,6 +31,13 @@ async function bootstrap() {
     serverUrl: `http://localhost:${port}/api/v1`,
     version: '1.0.0'
   })
+
+
+  app.enableCors({
+    origin: cfgService.get<string>("ALLOWED_ORIGINS").split(','),
+    methods: "*",
+  });
+
   await app.listen(port);
 }
 bootstrap();
