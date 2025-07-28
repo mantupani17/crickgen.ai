@@ -12,7 +12,7 @@ async function bootstrap() {
     appName:'crickgen-ai',
     appVersion: '1.0.0',
     deplomentEnv: 'Local',
-    traceUrl: 'http://localhost:4318/v1/traces'
+    traceUrl: 'http://13.223.184.1:4318/v1/traces'
   })).start()
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, appConfig);
