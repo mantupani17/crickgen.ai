@@ -36,7 +36,6 @@ export class MongoVectorStoreService {
   ): Promise<MongoDBAtlasVectorSearch> {
     const db = this.client.db(this.dbName);
     const collection = db.collection(this.collectionName);
-    console.log(this.collectionName)
     return MongoDBAtlasVectorSearch.fromDocuments(docs, embeddings, {
       collection,
       indexName: 'webscrapper-vector-index',

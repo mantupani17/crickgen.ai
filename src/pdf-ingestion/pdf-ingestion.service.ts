@@ -6,6 +6,8 @@ import { MongoVectorStoreService } from '../common/mongo-vector-store.service'; 
 import * as path from 'path';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs'
+import { ChatHistoryService } from '../common/chat-history/chat-history.service';
+import { Document } from '@langchain/core/documents';
 
 @Injectable()
 export class PdfIngestionService {
@@ -25,11 +27,11 @@ export class PdfIngestionService {
         temperature: 0.7
     });
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService, private readonly chatHistoryService: ChatHistoryService) {
     this.mongoClient = new MongoVectorStoreService(this.dbUri, this.dbname, this.collection);
   }
 
-  async ingestPdf(filePath: string) {
+  async ingestPdf(filePath: string, user?: any) {
     // 1. Load PDF file
     const loader = new PDFLoader(filePath);
     const rawDocs = await loader.load();
@@ -39,32 +41,62 @@ export class PdfIngestionService {
       chunkSize: 1000,
       chunkOverlap: 200,
     });
-    const docs = await splitter.splitDocuments(rawDocs);
+    const docs: any = await splitter.splitDocuments(rawDocs);
+
+    const enrichedDocs = docs.map((doc) => {
+      return new Document({
+        pageContent: doc.pageContent,
+        metadata: {
+          ...(doc.metadata || {}),
+          userId: user?.id || 'anonymous',
+        }
+      })
+    });
 
     await this.mongoClient.connect();
-    await this.mongoClient.insertDocuments(docs, this.embeddings);
+    await this.mongoClient.insertDocuments(enrichedDocs, this.embeddings);
     await this.mongoClient.close();
     fs.unlinkSync(filePath)
     return { chunks: docs.length, file: path.basename(filePath) };
   }
 
 
-  async ask(question: string) {
+  async ask(input: any, user: any) {
         try {
+          const  {
+              question,
+              sessionId
+            } = input
             await this.mongoClient.connect();
             const vectorStore = await this.mongoClient.getStore(this.embeddings); // insert & index
             const retriever = vectorStore.asRetriever({k: 10});
             const relevantDocs = await retriever.getRelevantDocuments(question);
             await this.mongoClient.close();
             const context = relevantDocs.map(doc => doc.pageContent).join('\n---\n');
-            const prompt = `You are an assistant that only answers based strictly on the given context. 
-                If the answer to the question cannot be found verbatim or very clearly within the context, respond with "Information not found in the provided context."
+            
+            const chatHistoryDetails = await this.chatHistoryService.getConversationHistory(sessionId)
+            const formattedHistory = chatHistoryDetails?.map((entry: any) => {
+              `User: ${entry.prompt}\nAssistant: ${entry?.response?.context}`
+            }).join('\n');
 
-                Context:
-                ${context}
+            const prompt = `You are an assistant that answers based on the context and conversation history.
 
-                Question: ${question}`;
+                          Context:
+                          ${context}
+
+                          Conversation History:
+                          ${formattedHistory}
+
+                          Current Question: ${question}
+
+                          If the answer cannot be found in the context or is unclear, respond with: "Information not found in the provided context."`;
             const response = await this.llm.invoke([{ role: 'user', content: prompt }]);
+            await this.chatHistoryService.saveChatEntry({
+              prompt: question,
+              userId: user.id,
+              response: response,
+              sessionId
+            })
             return response.content;
         } catch (error) {
             console.log(error)

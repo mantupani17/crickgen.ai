@@ -43,7 +43,6 @@ export class GeminiService {
             },
         }
     });
-    console.log(response.text);
   }
 
 }

@@ -27,5 +27,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile.stage.build
           push: true
           tags: dockermantu/multi-client:genai-service

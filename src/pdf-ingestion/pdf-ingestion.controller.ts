@@ -10,6 +10,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
 import { Throttle } from '@nestjs/throttler';
+import { Locals } from 'common-core-pkg';
 
 @Controller('pdf-ingestion')
 export class PdfIngestionController {
@@ -39,14 +40,20 @@ export class PdfIngestionController {
       },
     }),
   )
-  async handlePdfUpload(@UploadedFile() file: { path: string }) {
+  async handlePdfUpload(@UploadedFile() file: { path: string }, @Locals() locals: any) {
     if (!file) throw new Error('No file uploaded');
-    const result = await this.pdfService.ingestPdf(file.path);
+    const result = await this.pdfService.ingestPdf(file.path, locals.user);
     return { message: 'File ingested successfully', result };
   }
 
   @Post('ask')
-  async askWithPdfData(@Body('question') question: string) {
-    return this.pdfService.ask(question);
+  async askWithPdfData(@Body() {
+    question,
+    sessionId
+  }: {sessionId: string, question: string},  @Locals() locals: any) {
+    return this.pdfService.ask({
+        question,
+        sessionId
+      }, locals.user);
   }
 }

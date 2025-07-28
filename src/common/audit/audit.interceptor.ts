@@ -13,7 +13,6 @@ export class AuditInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now();
-    console.log("MF")
     const request = context.switchToHttp().getRequest();
     const { method, originalUrl: route, ip, body, query, params, user } = request;
     const userAgent = request.get('user-agent');
