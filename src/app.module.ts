@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ScrapperModule } from './scrapper/scrapper.module';
@@ -16,6 +16,10 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuditInterceptor } from './common/audit/audit.interceptor';
 import { AuditModule } from './common/audit/audit.module';
+import { AxiosService } from './common/axios-service';
+import { ValidateTokenMiddleware } from './common/middlewares/validate-token';
+import { AuthWrapperModule } from './auth-wrapper/auth-wrapper.module';
+import { ChatHistoryModule } from './common/chat-history/chat-history.module';
 
 @Module({
   imports: [
@@ -43,10 +47,13 @@ import { AuditModule } from './common/audit/audit.module';
     }),
     OpenaiModule,
     PdfIngestionModule,
-    AuditModule
+    AuditModule,
+    AuthWrapperModule,
+    ChatHistoryModule
   ],
   controllers: [AppController],
   providers: [
+    AxiosService,
     AppService, 
     GeminiService, 
     ScrapperService, 
@@ -62,4 +69,12 @@ import { AuditModule } from './common/audit/audit.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // consumer.apply(EncryptionMiddleware).forRoutes('*') // Apply encryption middleware if needed
+
+    // consumer.apply(DecryptionMiddleware).forRoutes('*') // Apply decryption middleware if needed
+
+    consumer.apply(ValidateTokenMiddleware).forRoutes('*')
+  }
+}

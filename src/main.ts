@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { appConfig, GenerateSwagger, LoggingInterceptor, setupOpenTelemetry } from 'common-core-pkg';
+import { GenerateSwagger, LoggingInterceptor, setupOpenTelemetry, appConfig } from 'common-core-pkg';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import * as express from 'express'

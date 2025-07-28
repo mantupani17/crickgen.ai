@@ -135,6 +135,62 @@
           "PdfIngestion"
         ]
       }
+    },
+    "/api/v1/auth/signup": {
+      "post": {
+        "operationId": "AuthWrapperController_signup",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AuthWrapper"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthWrapperController_login",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AuthWrapper"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthWrapperController_logout",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AuthWrapper"
+        ]
+      }
+    },
+    "/api/v1/chats": {
+      "get": {
+        "operationId": "ChatHistoryController_getChatHistory",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ChatHistory"
+        ]
+      }
     }
   },
   "info": {

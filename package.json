@@ -37,7 +37,7 @@
     "@nestjs/throttler": "^6.4.0",
     "axios": "^1.10.0",
     "cheerio": "^1.1.0",
-    "common-core-pkg": "^1.1.7",
+    "common-core-pkg": "^1.2.0-dev",
     "google-auth-library": "^10.1.0",
     "langchain": "^0.3.29",
     "mongodb": "^6.17.0",
