@@ -21,5 +21,7 @@ export class AuthWrapperController {
     }
 
     @Post("verify-email")
-    verifyEmail(@Body() payload) {}
+    verifyEmail(@Body() payload) {
+        return this.authSErvice.verifyEmail(payload)
+    }
 }

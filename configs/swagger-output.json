@@ -178,6 +178,20 @@
         ]
       }
     },
+    "/api/v1/auth/verify-email": {
+      "post": {
+        "operationId": "AuthWrapperController_verifyEmail",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AuthWrapper"
+        ]
+      }
+    },
     "/api/v1/chats": {
       "get": {
         "operationId": "ChatHistoryController_getChatHistory",

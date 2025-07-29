@@ -20,6 +20,7 @@ export class ValidateTokenMiddleware implements NestMiddleware {
   
   async use(req, res, next: NextFunction) {
     if (!excludeCsurfRoutes.includes(req.baseUrl)) {
+      console.log("Calling the Validate Request Middleware")
       const resp: any = await this.axiosService.postRequest('/auth/verify-access', {
           headers: {
               Authorization: req.headers.authorization
