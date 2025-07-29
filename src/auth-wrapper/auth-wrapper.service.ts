@@ -42,4 +42,16 @@ export class AuthWrapperService {
     }
     return resp.data;
   }
+
+  async verifyEmail(payload) {
+    const resp = await this.axiosService.postRequest(
+      '/auth/verify-email',
+      {},
+      payload,
+    );
+    if (!resp?.data) {
+      throw new UnauthorizedException('UnAuthorized Access');
+    }
+    return resp.data;
+  }
 }

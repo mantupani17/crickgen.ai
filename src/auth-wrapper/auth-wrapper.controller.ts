@@ -19,4 +19,7 @@ export class AuthWrapperController {
     logout(@Body() payload) {
         return this.authSErvice.logout(payload)
     }
+
+    @Post("verify-email")
+    verifyEmail(@Body() payload) {}
 }
