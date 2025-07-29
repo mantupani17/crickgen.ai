@@ -11,6 +11,7 @@ import { extname } from 'path';
 import { diskStorage } from 'multer';
 import { Throttle } from '@nestjs/throttler';
 import { Locals } from 'common-core-pkg';
+import { ValidateQuestion } from './dtos/ingest-response.dto';
 
 @Controller('pdf-ingestion')
 export class PdfIngestionController {
@@ -50,7 +51,7 @@ export class PdfIngestionController {
   async askWithPdfData(@Body() {
     question,
     sessionId
-  }: {sessionId: string, question: string},  @Locals() locals: any) {
+  }: ValidateQuestion,  @Locals() locals: any) {
     return this.pdfService.ask({
         question,
         sessionId
